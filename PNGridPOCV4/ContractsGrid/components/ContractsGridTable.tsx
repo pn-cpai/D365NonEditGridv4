@@ -20,6 +20,7 @@ import { DocumentIcon } from './Icons';
 const useStyles = makeStyles({
     gridContainer: {
         width: '100%',
+        flexGrow: 1,
         overflowX: 'auto',
         backgroundColor: tokens.colorNeutralBackground1
     },
@@ -28,7 +29,8 @@ const useStyles = makeStyles({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        ...shorthands.padding('40px'),
+        flexGrow: 1,
+        ...shorthands.padding(tokens.spacingVerticalXXXL, tokens.spacingHorizontalL),
         color: tokens.colorNeutralForeground3
     },
     headerCell: {

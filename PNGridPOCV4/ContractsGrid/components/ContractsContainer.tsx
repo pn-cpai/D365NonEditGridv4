@@ -1,9 +1,19 @@
 import * as React from 'react';
-import { FluentProvider, webLightTheme, webDarkTheme, Theme } from '@fluentui/react-components';
+import { FluentProvider, webLightTheme, webDarkTheme, Theme, makeStyles, tokens } from '@fluentui/react-components';
 import { ContractsToolbar } from './ContractsToolbar';
 import { ContractsGridTable } from './ContractsGridTable';
 import { ContractService } from '../services/ContractService';
 import { Contract } from '../models/Contract';
+
+const useStyles = makeStyles({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        backgroundColor: tokens.colorNeutralBackground1
+    }
+});
 
 interface ContractsContainerProps {
     entityId: string;
@@ -20,6 +30,7 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
     tokenTheme,
     isDarkMode = false
 }) => {
+    const styles = useStyles();
     const [contracts, setContracts] = React.useState<Contract[]>([]);
     const [filteredContracts, setFilteredContracts] = React.useState<Contract[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -70,16 +81,14 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
     };
 
     return (
-        <FluentProvider theme={theme} style={{ width: '100%', height: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
-                <ContractsToolbar
-                    onAddContract={handleAddContract}
-                    onRefresh={handleRefresh}
-                    onSearchChange={handleSearch}
-                    isLoading={isLoading}
-                />
-                <ContractsGridTable items={filteredContracts} isLoading={isLoading} />
-            </div>
+        <FluentProvider theme={theme} className={styles.root}>
+            <ContractsToolbar
+                onAddContract={handleAddContract}
+                onRefresh={handleRefresh}
+                onSearchChange={handleSearch}
+                isLoading={isLoading}
+            />
+            <ContractsGridTable items={filteredContracts} isLoading={isLoading} />
         </FluentProvider>
     );
 };

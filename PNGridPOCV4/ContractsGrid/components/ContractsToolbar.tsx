@@ -16,13 +16,13 @@ const useStyles = makeStyles({
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: tokens.colorNeutralBackground1,
-        ...shorthands.padding('4px', '8px'),
-        borderBottom: `1px solid ${tokens.colorNeutralStroke2}`
+        ...shorthands.padding(tokens.spacingVerticalXS, tokens.spacingHorizontalS),
+        borderBottom: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`
     },
     actionGroup: {
         display: 'flex',
         alignItems: 'center',
-        ...shorthands.gap('4px')
+        ...shorthands.gap(tokens.spacingHorizontalXS)
     },
     searchInput: {
         width: '220px'
