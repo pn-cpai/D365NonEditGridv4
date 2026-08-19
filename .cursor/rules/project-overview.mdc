@@ -1,0 +1,44 @@
+---
+description: PNGridPOCV4 project architecture, data flow, and current vs planned state
+alwaysApply: true
+---
+
+# PNGridPOCV4 — Project Context
+
+Virtual PCF React control (`control-type="virtual"`) of **grid/dataset** type. It displays **contracts from a 3rd-party API**, scoped to the host D365 record. Bound as a grid/subgrid; **do not** treat `contractsDataSet` as the contract source.
+
+- Namespace `PN`, constructor `PNGridPOCV4`, version `0.0.1`
+- Manifest dataset: `contractsDataSet` (required for grid binding only)
+- Host record: `context.mode.contextInfo.entityId` + `entityTypeName`
+
+## Layout
+
+```
+PNGridPOCV4/
+  index.ts                          # ReactControl: init / updateView / destroy
+  ControlManifest.Input.xml
+  ContractsGrid/
+    models/Contract.ts              # Contract + ContractStatus
+    services/ContractService.ts     # Mock today; real REST later
+    components/
+      ContractsContainer.tsx        # Theme, load, filter, compose UI
+      ContractsToolbar.tsx          # New / Refresh / search
+      ContractsGridTable.tsx        # Fluent v9 DataGrid
+      Icons.tsx                     # Prefer @fluentui/react-icons instead
+```
+
+## Data flow
+
+1. `updateView` reads host `entityId` / `entityTypeName` and Fluent theme, then renders `ContractsContainer`.
+2. Container calls `ContractService.fetchContractsByEntity(entityId, entityTypeName, apiEndpoint)`.
+3. Service currently returns **hardcoded mock rows** after a 350ms delay. `apiEndpoint` is `''`.
+4. Toolbar search filters in memory (`contractNumber`, `title`, `owner`, `status`).
+5. New Contract / row open currently use `alert()` placeholders.
+
+When adding the real API: keep the service boundary, enable `<external-service-usage>` with the API domain, and pass a real endpoint (manifest property or app setting)—do not scatter `fetch` in components.
+
+## Do not
+
+- Drive the grid from `contractsDataSet` unless a requirement explicitly changes this.
+- Add a CSS resource unless Fluent tokens cannot express the layout.
+- Upgrade React or Fluent past the pinned platform-library versions.

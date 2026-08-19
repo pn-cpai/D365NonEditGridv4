@@ -1,0 +1,33 @@
+---
+description: Locked React/Fluent versions and PCF-safe npm packages only
+alwaysApply: true
+---
+
+# PCF stack lock
+
+Virtual control. Host provides React and Fluent via platform libraries. **Do not change these versions.**
+
+| Library | Version | Where |
+|---|---|---|
+| React / react-dom | **16.14.0** | `package.json` + `<platform-library name="React">` |
+| @fluentui/react-components | **9.46.2** | `package.json` + `<platform-library name="Fluent">` |
+| @fluentui/react-icons | **2.0.335** | `package.json` only (allowed) |
+
+## React 16 limits
+
+Hooks and `React.FC` are fine. Do **not** use React 18 APIs (`createRoot`, `useId`, `useTransition`, `useDeferredValue`, `useSyncExternalStore`) or React 19 features.
+
+## Allowed packages
+
+Only browser-safe, PCF-supported libraries. Default allowlist:
+
+- `@fluentui/react-components@9.46.2` (do not add other Fluent major versions)
+- `@fluentui/react-icons@2.0.335`
+- `react` / `react-dom` 16.14.0
+- Native `fetch` for the 3rd-party API
+
+Do **not** add: `@fluentui/react` (v8), MUI, Ant, Chakra, `styled-components`, Emotion, Tailwind, axios, lodash, moment, jQuery, Node-only packages, or extra React copies.
+
+Before any new dependency: confirm it runs in the model-driven browser sandbox, has no Node APIs, and will not duplicate React/Fluent (host already injects them). Prefer Fluent v9 components over new packages.
+
+When the real API is added, declare the domain in `<external-service-usage enabled="true">` in `ControlManifest.Input.xml`.

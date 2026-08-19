@@ -1,0 +1,43 @@
+---
+description: Match native Dynamics 365 UI using Fluent v9 tokens; avoid hardcoded CSS
+globs: "**/*.{tsx,ts}"
+alwaysApply: false
+---
+
+# D365-native UI (Fluent v9)
+
+Every new React UI must look like native model-driven D365: theme, colors, command bar, buttons, grid, density, hover/focus. **No hex/rgb colors, no CSS files, no inline style objects** except Fluent layout that tokens cannot express.
+
+## Theme from the host (required)
+
+Pass `context.fluentDesignLanguage.tokenTheme` into `FluentProvider`. Do **not** use `webLightTheme` / `webDarkTheme` as the app theme — those ignore org branding.
+
+```tsx
+// ✅ GOOD
+<FluentProvider theme={tokenTheme} style={{ width: '100%', height: '100%' }}>
+
+// ❌ BAD
+<FluentProvider theme={isDarkMode ? webDarkTheme : webLightTheme}>
+```
+
+`tokenTheme.isDark` is only a fallback if the host theme is missing.
+
+## Styling
+
+- `makeStyles` + `tokens.*` + `shorthands` from `@fluentui/react-components` (Griffel).
+- Prefer Fluent primitives: `DataGrid`, `Toolbar` / `ToolbarButton`, `Button`, `Input`, `Badge`, `Spinner`, `Link`, `Dialog`, `Menu`.
+- Command bar: `ToolbarButton` `appearance="subtle"` (D365 command-bar pattern). Primary actions may use `appearance="primary"`.
+- Record identifiers: Fluent `Link` or `tokens.colorBrandForeground1`, not raw `<a>` + custom CSS.
+- Icons: `@fluentui/react-icons` (already in package.json). Do not add custom SVG icon components.
+
+```tsx
+// ✅ GOOD
+const useStyles = makeStyles({
+  root: { backgroundColor: tokens.colorNeutralBackground1, ...shorthands.padding(tokens.spacingVerticalXS, tokens.spacingHorizontalS) }
+});
+
+// ❌ BAD
+<div style={{ background: '#fff', padding: '8px' }} />
+```
+
+Match D365 grid behavior: sortable headers, resizable columns, compact rows, empty and loading states via `Spinner` / Fluent empty UI—not custom HTML tables.

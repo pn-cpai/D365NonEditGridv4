@@ -1,0 +1,23 @@
+---
+description: Component and PCF lifecycle patterns for this control
+globs: "PNGridPOCV4/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Component patterns
+
+- Functional components + hooks. Keep PCF lifecycle in `index.ts`; keep UI in `ContractsGrid/components`.
+- `index.ts` `updateView` must return `React.createElement(...)` (virtual ReactControl). Pass host context down as props (`entityId`, `entityTypeName`, `apiEndpoint`, `tokenTheme`).
+- Data access only in `ContractService`. Components do not call `fetch`.
+- Use `React.useCallback` / `useEffect` for load; handle loading and errors (replace `console.error` + silent fail with Fluent `MessageBar` when adding UX).
+- Do not use `alert()` for product flows—use Fluent `Dialog` or D365 navigation (`context.navigation`) when wiring real actions.
+- `generated/ManifestTypes.d.ts` is generated; edit `ControlManifest.Input.xml` then `npm run refreshTypes`.
+- ESLint: `@microsoft/eslint-plugin-power-apps` + type-checked TypeScript. Avoid `any` and unsafe Fluent context access; use narrow casts as in `index.ts`.
+
+```tsx
+// ✅ GOOD — service boundary
+const data = await ContractService.fetchContractsByEntity(entityId, entityTypeName, apiEndpoint);
+
+// ❌ BAD — fetch inside a component
+const res = await fetch(url);
+```
