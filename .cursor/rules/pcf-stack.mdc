@@ -30,4 +30,4 @@ Do **not** add: `@fluentui/react` (v8), MUI, Ant, Chakra, `styled-components`, E
 
 Before any new dependency: confirm it runs in the model-driven browser sandbox, has no Node APIs, and will not duplicate React/Fluent (host already injects them). Prefer Fluent v9 components over new packages.
 
-When the real API is added, declare the domain in `<external-service-usage enabled="true">` in `ControlManifest.Input.xml`.
+External Leah APIs are declared in `<external-service-usage enabled="true">` (`cloudstaging.contractpod.com`). Add any new production host there before calling it.

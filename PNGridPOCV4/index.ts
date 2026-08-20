@@ -1,6 +1,7 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { ContractsContainer } from "./ContractsGrid/components/ContractsContainer";
 import { Theme } from "@fluentui/react-components";
+import { DEFAULT_CREATE_CONTRACT_PAGE_NAME } from "./ContractsGrid/services/d365Navigation";
 import * as React from "react";
 
 // Strictly extend only contextInfo to access entity details without colliding with core PCF types
@@ -49,16 +50,16 @@ export class PNGridPOCV4 implements ComponentFramework.ReactControl<IInputs, IOu
 
         const entityId = mode.contextInfo?.entityId ?? '00000000-0000-0000-0000-000000000000';
         const entityTypeName = mode.contextInfo?.entityTypeName ?? 'account';
-        const apiEndpoint = '';
 
         const fluentDesign = context.fluentDesignLanguage;
         const tokenTheme = fluentDesign?.tokenTheme as Theme | undefined;
         const isDarkMode = fluentDesign?.isDarkTheme ?? false;
 
         return React.createElement(ContractsContainer, {
+            webAPI: context.webAPI,
             entityId,
             entityTypeName,
-            apiEndpoint,
+            createContractPageName: resolveCreateContractPageName(context),
             tokenTheme,
             isDarkMode
         });
@@ -79,4 +80,9 @@ export class PNGridPOCV4 implements ComponentFramework.ReactControl<IInputs, IOu
     public destroy(): void {
         // Add code to cleanup control if necessary
     }
+}
+
+function resolveCreateContractPageName(context: ComponentFramework.Context<IInputs>): string {
+    const configured = context.parameters.createContractPageName?.raw?.trim();
+    return configured ?? DEFAULT_CREATE_CONTRACT_PAGE_NAME;
 }

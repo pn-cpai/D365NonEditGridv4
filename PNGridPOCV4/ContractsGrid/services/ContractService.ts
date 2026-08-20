@@ -1,65 +1,177 @@
-import { Contract } from '../models/Contract';
+import { Contract, ContractStatus } from '../models/Contract';
+import { extractErrorMessage } from '../models/LeahConfiguration';
+import {
+    ApiError,
+    ContractSearchItem,
+    ContractSearchRequest,
+    ContractSearchResponse
+} from '../models/LeahApi';
+import { getAccessToken } from './LeahAuthService';
+import { retrieveLeahConfiguration } from './LeahConfigService';
+
+/** Staging application used by the contract-request search API. */
+const LEAH_APPLICATION_ID = 77;
+const SEARCH_PAGE_SIZE = 10;
 
 export class ContractService {
-    private static mockContracts: Contract[] = [
-        {
-            id: 'cnt-001',
-            contractNumber: 'CNT-2026-8801',
-            title: 'Enterprise Cloud Subscription & SLA',
-            contractValue: 125000.00,
-            currency: '$',
-            startDate: '2025-01-15',
-            endDate: '2026-12-31',
-            status: 'Active',
-            owner: 'Sarah Jenkins'
-        },
-        {
-            id: 'cnt-002',
-            contractNumber: 'CNT-2026-8802',
-            title: 'Managed IT Operations Support',
-            contractValue: 45000.00,
-            currency: '$',
-            startDate: '2024-06-01',
-            endDate: '2026-05-31',
-            status: 'Active',
-            owner: 'Alex Rivera'
-        },
-        {
-            id: 'cnt-003',
-            contractNumber: 'CNT-2025-4109',
-            title: 'Legacy Database Migration Services',
-            contractValue: 88000.00,
-            currency: '$',
-            startDate: '2024-01-01',
-            endDate: '2025-01-01',
-            status: 'Expired',
-            owner: 'Michael Chang'
-        },
-        {
-            id: 'cnt-004',
-            contractNumber: 'CNT-2026-9012',
-            title: 'AI Copilot Integration & Strategy',
-            contractValue: 210000.00,
-            currency: '$',
-            startDate: '2026-09-01',
-            endDate: '2027-08-31',
-            status: 'Pending',
-            owner: 'Sarah Jenkins'
-        }
-    ];
-
     /**
-     * Fetch contracts filtered by current Dynamics entity ID and logical name
+     * Load contracts from Leah (ContractPod) search API.
+     * Config comes from Dataverse in D365, or hardcoded harness values in pcf-start.
      */
-    public static async fetchContractsByEntity(entityId: string, entityLogicalName: string, apiEndpoint?: string): Promise<Contract[]> {
-        // Simulated network latency to mimic 3rd party REST call
-        await new Promise((resolve) => setTimeout(resolve, 350));
+    public static async fetchContractsByEntity(
+        webAPI: ComponentFramework.WebApi,
+        entityId: string,
+        entityTypeName: string
+    ): Promise<Contract[]> {
+        const config = await retrieveLeahConfiguration(webAPI);
+        const url = `${config.baseUrl}/api/${encodeURIComponent(config.tenantName)}/v3/contract-request/search`;
+        const body = buildSearchRequest(entityId, entityTypeName);
 
-        // TODO: Replace with real REST API call when ready
-        // Example:
-        // const response = await fetch(`${apiEndpoint}?entityType=${entityLogicalName}&entityId=${entityId}`);
-        // return await response.json();
+        const payload = await postSearch(webAPI, url, body, false);
+        return mapContracts(payload);
+    }
+}
 
-        return [...this.mockContracts];
+async function postSearch(
+    webAPI: ComponentFramework.WebApi,
+    url: string,
+    body: ContractSearchRequest,
+    hasRetried: boolean
+): Promise<ContractSearchResponse> {
+    const accessToken = await getAccessToken(webAPI, { forceRefresh: hasRetried });
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (response.status === 401 && !hasRetried) {
+            return postSearch(webAPI, url, body, true);
+        }
+
+        if (!response.ok) {
+            const bodyText = await safeReadText(response);
+            throw new ApiError(
+                'contracts',
+                `Contract search failed (${response.status}): ${bodyText || response.statusText}`,
+                response.status
+            );
+        }
+
+        return (await response.json()) as ContractSearchResponse;
+    } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
+        throw new ApiError(
+            'contracts',
+            extractErrorMessage(error, 'Unable to retrieve contracts from Leah.')
+        );
+    }
+}
+
+function buildSearchRequest(_entityId: string, _entityTypeName: string): ContractSearchRequest {
+    return {
+        filter: {
+            applicationId: LEAH_APPLICATION_ID,
+            pageNumber: 1,
+            pageSize: SEARCH_PAGE_SIZE,
+            search: '',
+            fieldGroup: {
+                fields: [],
+                fieldGroups: [],
+                concatenation: 'and',
+                boost: 0
+            }
+        },
+        sort: [
+            {
+                fieldName: 'modifiedon',
+                fieldType: 'Standard',
+                direction: 'desc'
+            }
+        ]
+    };
+}
+
+function mapContracts(payload: ContractSearchResponse): Contract[] {
+    const data = Array.isArray(payload.data) ? payload.data : [];
+    return data.map(mapContract);
+}
+
+function mapContract(item: ContractSearchItem): Contract {
+    const primaryAssignee = item.assignees?.find((assignee) => assignee.isPrimary) ?? item.assignees?.[0];
+
+    return {
+        id: String(item.contractId),
+        contractNumber: String(item.contractId),
+        title: item.requestDescription?.trim() ?? item.applicationTypeName?.trim() ?? `Contract ${item.contractId}`,
+        contractValue: parseContractValue(item.contractValue),
+        currency: mapCurrency(item.currencyCode, item.contractValueWithCurrency),
+        startDate: formatDisplayDate(item.effectiveDate ?? item.addedOn),
+        endDate: formatDisplayDate(item.expirationDate),
+        status: mapStatus(item.contractStatus),
+        owner: primaryAssignee?.fullName?.trim() ?? item.requesterFullName?.trim() ?? ''
+    };
+}
+
+function parseContractValue(value: string | null | undefined): number {
+    if (!value) {
+        return 0;
+    }
+    const parsed = Number.parseFloat(value.replace(/,/g, ''));
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function mapCurrency(currencyCode?: string | null, valueWithCurrency?: string | null): string {
+    if (currencyCode === 'USD') {
+        return '$';
+    }
+    if (currencyCode?.trim()) {
+        return currencyCode.trim();
+    }
+    const prefix = valueWithCurrency?.trim().charAt(0);
+    return prefix ?? '';
+}
+
+function mapStatus(status: string | null | undefined): ContractStatus {
+    switch ((status ?? '').trim()) {
+        case 'Active':
+            return 'Active';
+        case 'Pending':
+            return 'Pending';
+        case 'Expired':
+            return 'Expired';
+        case 'Terminated':
+            return 'Terminated';
+        default:
+            return 'Pending';
+    }
+}
+
+function formatDisplayDate(value: string | null | undefined): string {
+    if (!value) {
+        return '—';
+    }
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+        return value;
+    }
+
+    return parsed.toLocaleDateString();
+}
+
+async function safeReadText(response: Response): Promise<string> {
+    try {
+        return await response.text();
+    } catch {
+        return '';
     }
 }

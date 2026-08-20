@@ -5,40 +5,44 @@ alwaysApply: true
 
 # PNGridPOCV4 — Project Context
 
-Virtual PCF React control (`control-type="virtual"`) of **grid/dataset** type. It displays **contracts from a 3rd-party API**, scoped to the host D365 record. Bound as a grid/subgrid; **do not** treat `contractsDataSet` as the contract source.
+Virtual PCF React control (`control-type="virtual"`) of **grid/dataset** type. It displays **contracts from the Leah (ContractPod) search API**. Bound as a grid/subgrid; **do not** treat `contractsDataSet` as the contract source.
 
-- Namespace `PN`, constructor `PNGridPOCV4`, version `0.0.1`
-- Manifest dataset: `contractsDataSet` (required for grid binding only)
+- Namespace `PN`, constructor `PNGridPOCV4`
+- Manifest dataset: `contractsDataSet` (grid binding only)
 - Host record: `context.mode.contextInfo.entityId` + `entityTypeName`
+- External domain: `cloudstaging.contractpod.com`; WebAPI enabled for `cr964_pnleahconfiguration`
 
 ## Layout
 
 ```
 PNGridPOCV4/
-  index.ts                          # ReactControl: init / updateView / destroy
+  index.ts
   ControlManifest.Input.xml
   ContractsGrid/
-    models/Contract.ts              # Contract + ContractStatus
-    services/ContractService.ts     # Mock today; real REST later
+    models/Contract.ts
+    models/LeahConfiguration.ts     # Dataverse row, harness config, harness detect
+    models/LeahApi.ts               # Auth + search types, ApiError
+    services/LeahConfigService.ts   # Dataverse vs harness config
+    services/LeahAuthService.ts     # Token acquire / cache / persist
+    services/ContractService.ts     # POST v3/contract-request/search + map
     components/
-      ContractsContainer.tsx        # Theme, load, filter, compose UI
-      ContractsToolbar.tsx          # New / Refresh / search
-      ContractsGridTable.tsx        # Fluent v9 DataGrid
-      Icons.tsx                     # Prefer @fluentui/react-icons instead
+      ContractsContainer.tsx
+      ContractsToolbar.tsx
+      ContractsGridTable.tsx
+      Icons.tsx
 ```
 
 ## Data flow
 
-1. `updateView` reads host `entityId` / `entityTypeName` and Fluent theme, then renders `ContractsContainer`.
-2. Container calls `ContractService.fetchContractsByEntity(entityId, entityTypeName, apiEndpoint)`.
-3. Service currently returns **hardcoded mock rows** after a 350ms delay. `apiEndpoint` is `''`.
-4. Toolbar search filters in memory (`contractNumber`, `title`, `owner`, `status`).
-5. New Contract / row open currently use `alert()` placeholders.
-
-When adding the real API: keep the service boundary, enable `<external-service-usage>` with the API domain, and pass a real endpoint (manifest property or app setting)—do not scatter `fetch` in components.
+1. `updateView` passes `webAPI`, host entity, and `tokenTheme` into `ContractsContainer`.
+2. `LeahConfigService` reads `cr964_pnleahconfiguration` in D365, or `HARNESS_LEAH_CONFIG` in pcf-start.
+3. `LeahAuthService` POSTs `{{authApi}}/token`, reuses JWT until `exp`, persists token to the table in D365 only.
+4. `ContractService` POSTs `{{baseUrl}}/api/{{tenant}}/v3/contract-request/search` and maps rows to `Contract`.
+5. Toolbar search filters in memory. **New Contract** opens custom page `cr964_createcontractpagepoc_cd646` as a D365 right-side slider (`Xrm.App.sidePanes`, fallback `navigateTo`).
 
 ## Do not
 
 - Drive the grid from `contractsDataSet` unless a requirement explicitly changes this.
+- Call `fetch` from React components — keep it in services.
 - Add a CSS resource unless Fluent tokens cannot express the layout.
 - Upgrade React or Fluent past the pinned platform-library versions.
