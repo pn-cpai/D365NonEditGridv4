@@ -1,10 +1,12 @@
-import { Contract, ContractStatus } from '../models/Contract';
+import { Contract, ContractStatus, ContractRequest } from '../models/Contract';
 import { extractErrorMessage } from '../models/LeahConfiguration';
 import {
     ApiError,
     ContractSearchItem,
     ContractSearchRequest,
-    ContractSearchResponse
+    ContractSearchResponse,
+    ContractRequestResponse,
+    ContractRequestItem,
 } from '../models/LeahApi';
 import { getAccessToken } from './LeahAuthService';
 import { retrieveLeahConfiguration } from './LeahConfigService';
@@ -29,6 +31,18 @@ export class ContractService {
 
         const payload = await postSearch(webAPI, url, body, false);
         return mapContracts(payload);
+    }
+
+        public static async fetchContractRequestsByEntity(
+        webAPI: ComponentFramework.WebApi,
+        entityId: string,
+        entityTypeName: string
+    ): Promise<ContractRequest[]> {
+        const config = await retrieveLeahConfiguration(webAPI);
+        const url = `${config.baseUrl}/api/${encodeURIComponent(config.tenantName)}/contract-request`;
+
+        const payload = await getContractRequests(webAPI, url, false);
+        return mapContractRequests(payload);
     }
 }
 
@@ -76,6 +90,47 @@ async function postSearch(
     }
 }
 
+async function getContractRequests(
+    webAPI: ComponentFramework.WebApi,
+    url: string,
+    hasRetried: boolean
+): Promise<ContractRequestResponse> {
+    const accessToken = await getAccessToken(webAPI, { forceRefresh: hasRetried });
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        if (response.status === 401 && !hasRetried) {
+            return getContractRequests(webAPI, url, true);
+        }
+
+        if (!response.ok) {
+            const bodyText = await safeReadText(response);
+            throw new ApiError(
+                'contracts',
+                `Contract request fetch failed (${response.status}): ${bodyText || response.statusText}`,
+                response.status
+            );
+        }
+
+        return (await response.json()) as ContractRequestResponse;
+    } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
+        throw new ApiError(
+            'contracts',
+            extractErrorMessage(error, 'Unable to retrieve contract requests from Leah.')
+        );
+    }
+}
+
 function buildSearchRequest(_entityId: string, _entityTypeName: string): ContractSearchRequest {
     return {
         filter: {
@@ -97,6 +152,21 @@ function buildSearchRequest(_entityId: string, _entityTypeName: string): Contrac
                 direction: 'desc'
             }
         ]
+    };
+}
+
+function mapContractRequests(payload: ContractRequestResponse): ContractRequest[] {
+    const data = Array.isArray(payload.data) ? payload.data : [];
+    return data.map(mapContractRequest);
+}
+
+function mapContractRequest(item: ContractRequestItem): ContractRequest {
+    return {
+        id: String(item.id),
+        recordId: item.recordId,
+        workflowStage: item.workflowStage,
+        requesterUserId: item.requesterUser.userId,
+        requesterDepartmentId: item.requesterUser.departmentId
     };
 }
 

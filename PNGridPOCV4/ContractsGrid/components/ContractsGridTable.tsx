@@ -14,7 +14,7 @@ import {
     tokens,
     shorthands
 } from '@fluentui/react-components';
-import { Contract, ContractStatus } from '../models/Contract';
+import { Contract, ContractRequest, ContractStatus } from '../models/Contract';
 import { DocumentIcon } from './Icons';
 
 const useStyles = makeStyles({
@@ -47,6 +47,100 @@ const useStyles = makeStyles({
         }
     }
 });
+
+interface ContractRequestGridTableProps {
+    items: ContractRequest[];
+    isLoading: boolean;
+}
+
+export const ContractRequestGridTable: React.FC<ContractRequestGridTableProps> = ({ items, isLoading }) => {
+    const styles = useStyles();
+
+    const getBadgeAppearance = (workflowStage: string) => {
+        switch (workflowStage) {
+            case 'Request Submitted':
+                return { color: 'success' as const, appearance: 'tint' as const };
+            case 'Negotiation Stage':
+                return { color: 'warning' as const, appearance: 'tint' as const };
+            case 'Signatures':
+                return { color: 'severe' as const, appearance: 'tint' as const };
+            case 'Terminated':
+                return { color: 'danger' as const, appearance: 'tint' as const };
+            default:
+                return { color: 'informative' as const, appearance: 'tint' as const };
+        }
+    };
+
+    const columns: TableColumnDefinition<ContractRequest>[] = [
+        createTableColumn<ContractRequest>({
+            columnId: 'recordId',
+            compare: (a, b) => a.recordId - b.recordId,
+            renderHeaderCell: () => <span className={styles.headerCell}>Record ID</span>,
+            renderCell: (item) => <span>{item.recordId}</span>
+        }),
+        createTableColumn<ContractRequest>({
+            columnId: 'workflowStage',
+            compare: (a, b) => a.workflowStage.localeCompare(b.workflowStage),
+            renderHeaderCell: () => <span className={styles.headerCell}>Workflow Stage</span>,
+            renderCell: (item) => (
+                <Badge {...getBadgeAppearance(item.workflowStage)}>
+                    {item.workflowStage}
+                </Badge>
+            )
+        }),
+        createTableColumn<ContractRequest>({
+            columnId: 'requesterUserId',
+            compare: (a, b) => a.requesterUserId - b.requesterUserId,
+            renderHeaderCell: () => <span className={styles.headerCell}>Requester User ID</span>,
+            renderCell: (item) => <span>{item.requesterUserId}</span>
+        }),
+        createTableColumn<ContractRequest>({
+            columnId: 'requesterDepartmentId',
+            compare: (a, b) => a.requesterDepartmentId - b.requesterDepartmentId,
+            renderHeaderCell: () => <span className={styles.headerCell}>Requester Department ID</span>,
+            renderCell: (item) => <span>{item.requesterDepartmentId}</span>
+        })
+    ];
+
+        if (isLoading) {
+        return (
+            <div className={styles.noDataContainer}>
+                <Spinner label="Loading contracts..." />
+            </div>
+        );
+    }
+
+    if (items.length === 0) {
+        return (
+            <div className={styles.noDataContainer}>
+                <DocumentIcon />
+                <p>No contracts found for this record.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.gridContainer}>
+            <DataGrid items={items} columns={columns} sortable resizableColumns focusMode="composite">
+                <DataGridHeader>
+                    <DataGridRow>
+                        {({ renderHeaderCell }) => (
+                            <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                        )}
+                    </DataGridRow>
+                </DataGridHeader>
+                <DataGridBody<Contract>>
+                    {({ item, rowId }) => (
+                        <DataGridRow<Contract> key={rowId}>
+                            {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
+                        </DataGridRow>
+                    )}
+                </DataGridBody>
+            </DataGrid>
+        </div>
+    );
+
+}
 
 interface ContractsGridTableProps {
     items: Contract[];

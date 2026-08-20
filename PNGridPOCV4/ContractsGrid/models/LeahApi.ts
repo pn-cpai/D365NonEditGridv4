@@ -72,6 +72,28 @@ export interface ContractSearchResponse {
     message?: string | null;
 }
 
+/** Nested requester user on a contract request */
+export interface RequesterUser {
+  userId: number;
+  departmentId: number;
+}
+
+/** Single item in Contract Request API data[] */
+export interface ContractRequestItem {
+  id: number;
+  recordId: number;
+  workflowStage: string;
+  requesterUser: RequesterUser;
+}
+
+/** GET {{baseUrl}}/api/{{tenant_name}}/contract-request response */
+export interface ContractRequestResponse {
+  data: ContractRequestItem[];
+  statusCode: number;
+  message: string;
+  totalRecords: number;
+}
+
 export type ApiErrorSource = 'config' | 'auth' | 'contracts';
 
 export class ApiError extends Error {

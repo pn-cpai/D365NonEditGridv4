@@ -12,9 +12,9 @@ import {
     MessageBarTitle
 } from '@fluentui/react-components';
 import { ContractsToolbar } from './ContractsToolbar';
-import { ContractsGridTable } from './ContractsGridTable';
+import { ContractRequestGridTable, ContractsGridTable } from './ContractsGridTable';
 import { ContractService } from '../services/ContractService';
-import { Contract } from '../models/Contract';
+import { Contract, ContractRequest } from '../models/Contract';
 import { extractErrorMessage } from '../models/LeahConfiguration';
 import { openCreateContractSidePanel } from '../services/d365Navigation';
 
@@ -49,8 +49,10 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
     isDarkMode = false
 }) => {
     const styles = useStyles();
-    const [contracts, setContracts] = React.useState<Contract[]>([]);
-    const [filteredContracts, setFilteredContracts] = React.useState<Contract[]>([]);
+    //const [contracts, setContracts] = React.useState<Contract[]>([]);
+    const [contracts, setContracts] = React.useState<ContractRequest[]>([]);
+    //const [filteredContracts, setFilteredContracts] = React.useState<Contract[]>([]);
+    const [filteredContracts, setFilteredContracts] = React.useState<ContractRequest[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
     const [infoMessage, setInfoMessage] = React.useState<string | null>(null);
@@ -62,7 +64,8 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
         setIsLoading(true);
         setErrorMessage(null);
         try {
-            const data = await ContractService.fetchContractsByEntity(webAPI, entityId, entityTypeName);
+            //const data = await ContractService.fetchContractsByEntity(webAPI, entityId, entityTypeName);
+            const data = await ContractService.fetchContractRequestsByEntity(webAPI, entityId, entityTypeName);
             setContracts(data);
             setFilteredContracts(data);
         } catch (error) {
@@ -84,13 +87,23 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
             return;
         }
         const lower = query.toLowerCase();
-        setFilteredContracts(
+        // setFilteredContracts(
+        //     contracts.filter(
+        //         (c) =>
+        //             c.contractNumber.toLowerCase().includes(lower) ||
+        //             c.title.toLowerCase().includes(lower) ||
+        //             c.owner.toLowerCase().includes(lower) ||
+        //             c.status.toLowerCase().includes(lower)
+        //     )
+        // );
+
+         setFilteredContracts(
             contracts.filter(
                 (c) =>
-                    c.contractNumber.toLowerCase().includes(lower) ||
-                    c.title.toLowerCase().includes(lower) ||
-                    c.owner.toLowerCase().includes(lower) ||
-                    c.status.toLowerCase().includes(lower)
+                    c.recordId.toString().toLowerCase().includes(lower) ||
+                    c.requesterDepartmentId.toString().toLowerCase().includes(lower) ||
+                    c.requesterUserId.toString().toLowerCase().includes(lower) ||
+                    c.workflowStage.toLowerCase().includes(lower)
             )
         );
     };
@@ -134,7 +147,8 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
                     </MessageBarBody>
                 </MessageBar>
             ) : null}
-            <ContractsGridTable items={filteredContracts} isLoading={isLoading} />
+            {/* <ContractsGridTable items={filteredContracts} isLoading={isLoading} /> */}
+            <ContractRequestGridTable items={filteredContracts} isLoading={isLoading} />
         </FluentProvider>
     );
 };

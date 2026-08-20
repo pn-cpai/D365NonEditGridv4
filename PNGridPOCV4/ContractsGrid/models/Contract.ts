@@ -11,3 +11,11 @@ export interface Contract {
     status: ContractStatus;
     owner: string;
 }
+
+export interface ContractRequest {
+    id: string;
+    recordId: number;
+    workflowStage: string;
+    requesterUserId: number;
+    requesterDepartmentId: number;
+}
