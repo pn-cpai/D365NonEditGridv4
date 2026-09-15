@@ -15,6 +15,12 @@ import { retrieveLeahConfiguration } from './LeahConfigService';
 const LEAH_APPLICATION_ID = 77;
 const SEARCH_PAGE_SIZE = 10;
 
+/** Toggle to bypass Leah and return mock contract data during local/dev testing. */
+export const USE_MOCK_CONTRACT_DATA = true;
+
+declare const require: (path: string) => unknown;
+const mockContractData = require('./MockContractData.json') as ContractSearchResponse;
+
 export class ContractService {
     /**
      * Load contracts from Leah (ContractPod) search API.
@@ -25,6 +31,10 @@ export class ContractService {
         entityId: string,
         entityTypeName: string
     ): Promise<Contract[]> {
+        if (USE_MOCK_CONTRACT_DATA) {
+            return mapContracts(mockContractData);
+        }
+
         const config = await retrieveLeahConfiguration(webAPI);
         const url = `${config.baseUrl}/api/${encodeURIComponent(config.tenantName)}/v3/contract-request/search`;
         const body = buildSearchRequest(entityId, entityTypeName);
