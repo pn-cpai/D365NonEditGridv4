@@ -20,8 +20,10 @@ import { DocumentIcon } from './Icons';
 const useStyles = makeStyles({
     gridContainer: {
         width: '100%',
+        minWidth: 0,
         flexGrow: 1,
         overflowX: 'auto',
+        overflowY: 'hidden',
         backgroundColor: tokens.colorNeutralBackground1
     },
     noDataContainer: {
@@ -37,7 +39,20 @@ const useStyles = makeStyles({
         fontWeight: tokens.fontWeightSemibold,
         color: tokens.colorNeutralForeground1
     },
+    cellContent: {
+        display: 'block',
+        minWidth: 0,
+        maxWidth: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    },
     contractLink: {
+        display: 'inline-block',
+        maxWidth: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
         color: tokens.colorBrandForeground1,
         textDecorationLine: 'none',
         fontWeight: tokens.fontWeightSemibold,
@@ -180,7 +195,7 @@ export const ContractsGridTable: React.FC<ContractsGridTableProps> = ({ items, i
             columnId: 'title',
             compare: (a, b) => a.title.localeCompare(b.title),
             renderHeaderCell: () => <span className={styles.headerCell}>Contract Title</span>,
-            renderCell: (item) => <span>{item.title}</span>
+            renderCell: (item) => <span className={styles.cellContent}>{item.title}</span>
         }),
         createTableColumn<Contract>({
             columnId: 'status',
@@ -200,7 +215,7 @@ export const ContractsGridTable: React.FC<ContractsGridTableProps> = ({ items, i
             compare: (a, b) => a.contractValue - b.contractValue,
             renderHeaderCell: () => <span className={styles.headerCell}>Value</span>,
             renderCell: (item) => (
-                <span>
+                <span className={styles.cellContent}>
                     {item.currency}{item.contractValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </span>
             )
@@ -209,19 +224,19 @@ export const ContractsGridTable: React.FC<ContractsGridTableProps> = ({ items, i
             columnId: 'startDate',
             compare: (a, b) => a.startDate.localeCompare(b.startDate),
             renderHeaderCell: () => <span className={styles.headerCell}>Start Date</span>,
-            renderCell: (item) => <span>{item.startDate}</span>
+            renderCell: (item) => <span className={styles.cellContent}>{item.startDate}</span>
         }),
         createTableColumn<Contract>({
             columnId: 'endDate',
             compare: (a, b) => a.endDate.localeCompare(b.endDate),
             renderHeaderCell: () => <span className={styles.headerCell}>End Date</span>,
-            renderCell: (item) => <span>{item.endDate}</span>
+            renderCell: (item) => <span className={styles.cellContent}>{item.endDate}</span>
         }),
         createTableColumn<Contract>({
             columnId: 'owner',
             compare: (a, b) => a.owner.localeCompare(b.owner),
             renderHeaderCell: () => <span className={styles.headerCell}>Owner</span>,
-            renderCell: (item) => <span>{item.owner}</span>
+            renderCell: (item) => <span className={styles.cellContent}>{item.owner}</span>
         })
     ];
 
@@ -244,7 +259,14 @@ export const ContractsGridTable: React.FC<ContractsGridTableProps> = ({ items, i
 
     return (
         <div className={styles.gridContainer}>
-            <DataGrid items={items} columns={columns} sortable resizableColumns focusMode="composite">
+            <DataGrid
+                items={items}
+                columns={columns}
+                sortable
+                resizableColumns
+                focusMode="composite"
+                style={{ minWidth: 0, width: '100%' }}
+            >
                 <DataGridHeader>
                     <DataGridRow>
                         {({ renderHeaderCell }) => (
