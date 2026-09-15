@@ -23,6 +23,7 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        minWidth: 0,
         height: '100%',
         backgroundColor: tokens.colorNeutralBackground1
     },
@@ -49,10 +50,10 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
     isDarkMode = false
 }) => {
     const styles = useStyles();
-    //const [contracts, setContracts] = React.useState<Contract[]>([]);
-    const [contracts, setContracts] = React.useState<ContractRequest[]>([]);
-    //const [filteredContracts, setFilteredContracts] = React.useState<Contract[]>([]);
-    const [filteredContracts, setFilteredContracts] = React.useState<ContractRequest[]>([]);
+    const [contracts, setContracts] = React.useState<Contract[]>([]);
+    //const [contracts, setContracts] = React.useState<ContractRequest[]>([]);
+    const [filteredContracts, setFilteredContracts] = React.useState<Contract[]>([]);
+    //const [filteredContracts, setFilteredContracts] = React.useState<ContractRequest[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
     const [infoMessage, setInfoMessage] = React.useState<string | null>(null);
@@ -64,8 +65,8 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
         setIsLoading(true);
         setErrorMessage(null);
         try {
-            //const data = await ContractService.fetchContractsByEntity(webAPI, entityId, entityTypeName);
-            const data = await ContractService.fetchContractRequestsByEntity(webAPI, entityId, entityTypeName);
+            const data = await ContractService.fetchContractsByEntity(webAPI, entityId, entityTypeName);
+            //const data = await ContractService.fetchContractRequestsByEntity(webAPI, entityId, entityTypeName);
             setContracts(data);
             setFilteredContracts(data);
         } catch (error) {
@@ -87,25 +88,25 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
             return;
         }
         const lower = query.toLowerCase();
-        // setFilteredContracts(
-        //     contracts.filter(
-        //         (c) =>
-        //             c.contractNumber.toLowerCase().includes(lower) ||
-        //             c.title.toLowerCase().includes(lower) ||
-        //             c.owner.toLowerCase().includes(lower) ||
-        //             c.status.toLowerCase().includes(lower)
-        //     )
-        // );
-
-         setFilteredContracts(
+        setFilteredContracts(
             contracts.filter(
                 (c) =>
-                    c.recordId.toString().toLowerCase().includes(lower) ||
-                    c.requesterDepartmentId.toString().toLowerCase().includes(lower) ||
-                    c.requesterUserId.toString().toLowerCase().includes(lower) ||
-                    c.workflowStage.toLowerCase().includes(lower)
+                    c.contractNumber.toLowerCase().includes(lower) ||
+                    c.title.toLowerCase().includes(lower) ||
+                    c.owner.toLowerCase().includes(lower) ||
+                    c.status.toLowerCase().includes(lower)
             )
         );
+
+        //  setFilteredContracts(
+        //     contracts.filter(
+        //         (c) =>
+        //             c.recordId.toString().toLowerCase().includes(lower) ||
+        //             c.requesterDepartmentId.toString().toLowerCase().includes(lower) ||
+        //             c.requesterUserId.toString().toLowerCase().includes(lower) ||
+        //             c.workflowStage.toLowerCase().includes(lower)
+        //     )
+        // );
     };
 
     const handleAddContract = () => {
@@ -147,8 +148,8 @@ export const ContractsContainer: React.FC<ContractsContainerProps> = ({
                     </MessageBarBody>
                 </MessageBar>
             ) : null}
-            {/* <ContractsGridTable items={filteredContracts} isLoading={isLoading} /> */}
-            <ContractRequestGridTable items={filteredContracts} isLoading={isLoading} />
+             <ContractsGridTable items={filteredContracts} isLoading={isLoading} /> 
+            {/* <ContractRequestGridTable items={filteredContracts} isLoading={isLoading} /> */}
         </FluentProvider>
     );
 };

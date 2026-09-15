@@ -35,8 +35,8 @@ export interface LeahIntegrationConfig {
  */
 export const HARNESS_LEAH_CONFIG: LeahIntegrationConfig = {
     configurationId: 'harness-local-config',
-    //baseUrl: 'https://cloudstaging.contractpod.com/cpaimt_api',
-    baseUrl: 'https://cpai-productapi-stg.azurewebsites.net',
+    baseUrl: 'https://cloudstaging.contractpod.com/cpaimt_api',
+    //baseUrl: 'https://cpai-productapi-stg.azurewebsites.net',
     authApi: 'https://cloudstaging.contractpod.com/cpaimt_auth/auth',
     tenantName: 'execo2',
     grantType: 'client_credentials',
