@@ -19,7 +19,7 @@ let cachedConfig: LeahIntegrationConfig | null = null;
 let harnessModeActive = false;
 
 export function isHarnessModeActive(): boolean {
-    return harnessModeActive || isPcfTestHarness();
+    return true; //harnessModeActive || isPcfTestHarness();
 }
 
 export function clearConfigCache(): void {

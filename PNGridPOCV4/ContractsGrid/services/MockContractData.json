@@ -1,0 +1,407 @@
+{
+    "totalRecords": 4,
+    "data": [
+        {
+            "requestId": 94006,
+            "requestTypeName": "Upload/Review a New Contract",
+            "contractId": 103263,
+            "applicationTypeId": 1753,
+            "applicationTypeName": "PN Complex Agreement 4th Nov",
+            "applicationName": "Contract Management",
+            "applicationId": 77,
+            "contractStatus": "Active",
+            "hasFinalStatus": true,
+            "hasPendingSignatures": false,
+            "organizationName": "Execo",
+            "contractValue": "101.00",
+            "contractValueWithCurrency": "$ 101.00",
+            "priority": true,
+            "priorityReason": "Priority Reason Test",
+            "addedOn": "2026-02-25T09:41:39.553",
+            "modifiedOn": "2026-02-25T09:44:31.993",
+            "addedBy": 9150,
+            "organizationId": 2,
+            "isConfidential": true,
+            "effectiveDate": null,
+            "expirationDate": "2027-03-19T07:17:01.763",
+            "renewalDate": null,
+            "lastModifiedDate": "2026-02-25T09:44:31.993",
+            "clients": [
+                {
+                    "clientId": 1778,
+                    "clientName": "Test Party API1",
+                    "clientTypeName": "Customer",
+                    "streetLine1": "Test street 1",
+                    "state": null,
+                    "city": null,
+                    "countryName": "Australia",
+                    "contactName": "Test Contact",
+                    "isPrimary": true,
+                    "clientRoleName": "Supplier",
+                    "externalId": "67890"
+                }
+            ],
+            "assignees": [
+                {
+                    "username": "karan.kalbhor@execo.com",
+                    "fullName": "Karan Kalbhor",
+                    "departmentName": "CPAi Support",
+                    "functionName": "Legal Reviwer",
+                    "isPrimary": true
+                }
+            ],
+            "legalParties": [
+                {
+                    "legalPartyId": 11,
+                    "name": "ContractPod Inc.",
+                    "isPrimary": true
+                }
+            ],
+            "customFields": [
+                {
+                    "customFieldName": "Termoftheagreement",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "terminationofcontract",
+                    "customFieldValue": "Termination by either party",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Paymentterms1",
+                    "customFieldValue": "5",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "PaymentTerms",
+                    "customFieldValue": "Yes",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Term",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                }
+            ],
+            "isArchived": false,
+            "hasRelationship": false,
+            "latestVersionName": "PN_Complex_Agreement_Template_1_V1.pdf",
+            "hasOpenCollaboration": false,
+            "isEvergreenContract": false,
+            "requestDescription": "NDA - ABC Corp. 19th Feb 2026",
+            "requesterUsername": null,
+            "requesterFullName": "Karan Kalbhor",
+            "requesterDepartment": "CPAi Support",
+            "requesterUserId": null,
+            "requesterDepartmentId": null,
+            "integrationId": [
+                "1123",
+                "1124"
+            ],
+            "currencyCode": "USD"
+        },
+        {
+            "requestId": 94000,
+            "requestTypeName": "Upload/Review a New Contract",
+            "contractId": 103258,
+            "applicationTypeId": 1753,
+            "applicationTypeName": "PN Complex Agreement 4th Nov",
+            "applicationName": "Contract Management",
+            "applicationId": 77,
+            "contractStatus": "Active",
+            "hasFinalStatus": true,
+            "hasPendingSignatures": false,
+            "organizationName": "Execo",
+            "contractValue": "101.00",
+            "contractValueWithCurrency": "$ 101.00",
+            "priority": true,
+            "priorityReason": "Priority Reason Test",
+            "addedOn": "2026-02-24T14:29:25.017",
+            "modifiedOn": "2026-02-25T07:17:01.763",
+            "addedBy": 9150,
+            "organizationId": 2,
+            "isConfidential": true,
+            "effectiveDate": null,
+            "expirationDate": "2027-02-25T07:17:01.763",
+            "renewalDate": null,
+            "lastModifiedDate": "2026-02-25T07:17:01.763",
+            "clients": [
+                {
+                    "clientId": 1778,
+                    "clientName": "Test Party API1",
+                    "clientTypeName": "Customer",
+                    "streetLine1": "Test street 1",
+                    "state": null,
+                    "city": null,
+                    "countryName": "Australia",
+                    "contactName": "Test Contact",
+                    "isPrimary": true,
+                    "clientRoleName": "Supplier",
+                    "externalId": "67890"
+                }
+            ],
+            "assignees": [
+                {
+                    "username": "karan.kalbhor@execo.com",
+                    "fullName": "Karan Kalbhor",
+                    "departmentName": "CPAi Support",
+                    "functionName": "Legal Reviwer",
+                    "isPrimary": true
+                }
+            ],
+            "legalParties": [
+                {
+                    "legalPartyId": 11,
+                    "name": "ContractPod Inc.",
+                    "isPrimary": true
+                }
+            ],
+            "customFields": [
+                {
+                    "customFieldName": "Termoftheagreement",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "terminationofcontract",
+                    "customFieldValue": "Termination by either party",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Paymentterms1",
+                    "customFieldValue": "5",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "PaymentTerms",
+                    "customFieldValue": "Yes",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Term",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                }
+            ],
+            "isArchived": false,
+            "hasRelationship": false,
+            "latestVersionName": "PN_Complex_Agreement_Template_1_V1.pdf",
+            "hasOpenCollaboration": false,
+            "isEvergreenContract": false,
+            "requestDescription": "SOW - ACME Corp. 19th Feb 2026",
+            "requesterUsername": null,
+            "requesterFullName": "Karan Kalbhor",
+            "requesterDepartment": "CPAi Support",
+            "requesterUserId": null,
+            "requesterDepartmentId": null,
+            "integrationId": [
+                "1123",
+                "1124"
+            ],
+            "currencyCode": "USD"
+        },
+		{
+            "requestId": 94001,
+            "requestTypeName": "Upload/Review a New Contract",
+            "contractId": 103259,
+            "applicationTypeId": 1753,
+            "applicationTypeName": "PN Complex Agreement 4th Nov",
+            "applicationName": "Contract Management",
+            "applicationId": 77,
+            "contractStatus": "Active",
+            "hasFinalStatus": true,
+            "hasPendingSignatures": false,
+            "organizationName": "Execo",
+            "contractValue": "101.00",
+            "contractValueWithCurrency": "$ 101.00",
+            "priority": true,
+            "priorityReason": "Priority Reason Test",
+            "addedOn": "2026-02-24T14:29:25.017",
+            "modifiedOn": "2026-02-25T07:17:01.763",
+            "addedBy": 9150,
+            "organizationId": 2,
+            "isConfidential": true,
+            "effectiveDate": null,
+            "expirationDate": "2027-03-24T07:17:01.763",
+            "renewalDate": null,
+            "lastModifiedDate": "2026-02-25T07:17:01.763",
+            "clients": [
+                {
+                    "clientId": 1778,
+                    "clientName": "Test Party API1",
+                    "clientTypeName": "Customer",
+                    "streetLine1": "Test street 1",
+                    "state": null,
+                    "city": null,
+                    "countryName": "Australia",
+                    "contactName": "Test Contact",
+                    "isPrimary": true,
+                    "clientRoleName": "Supplier",
+                    "externalId": "67890"
+                }
+            ],
+            "assignees": [
+                {
+                    "username": "karan.kalbhor@execo.com",
+                    "fullName": "Karan Kalbhor",
+                    "departmentName": "CPAi Support",
+                    "functionName": "Legal Reviwer",
+                    "isPrimary": true
+                }
+            ],
+            "legalParties": [
+                {
+                    "legalPartyId": 11,
+                    "name": "ContractPod Inc.",
+                    "isPrimary": true
+                }
+            ],
+            "customFields": [
+                {
+                    "customFieldName": "Termoftheagreement",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "terminationofcontract",
+                    "customFieldValue": "Termination by either party",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Paymentterms1",
+                    "customFieldValue": "5",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "PaymentTerms",
+                    "customFieldValue": "Yes",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Term",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                }
+            ],
+            "isArchived": false,
+            "hasRelationship": false,
+            "latestVersionName": "PN_Complex_Agreement_Template_1_V1.pdf",
+            "hasOpenCollaboration": false,
+            "isEvergreenContract": false,
+            "requestDescription": "NDA - ACME Corp. 19th Feb 2026",
+            "requesterUsername": null,
+            "requesterFullName": "Karan Kalbhor",
+            "requesterDepartment": "CPAi Support",
+            "requesterUserId": null,
+            "requesterDepartmentId": null,
+            "integrationId": [
+                "1123",
+                "1124"
+            ],
+            "currencyCode": "USD"
+        },
+		{
+            "requestId": 94002,
+            "requestTypeName": "Upload/Review a New Contract",
+            "contractId": 103260,
+            "applicationTypeId": 1753,
+            "applicationTypeName": "PN Complex Agreement 4th Nov",
+            "applicationName": "Contract Management",
+            "applicationId": 77,
+            "contractStatus": "Active",
+            "hasFinalStatus": true,
+            "hasPendingSignatures": false,
+            "organizationName": "Execo",
+            "contractValue": "101.00",
+            "contractValueWithCurrency": "$ 101.00",
+            "priority": true,
+            "priorityReason": "Priority Reason Test",
+            "addedOn": "2026-02-24T14:29:25.017",
+            "modifiedOn": "2026-02-25T07:17:01.763",
+            "addedBy": 9150,
+            "organizationId": 2,
+            "isConfidential": true,
+            "effectiveDate": null,
+            "expirationDate": "2027-08-15T07:17:01.763",
+            "renewalDate": null,
+            "lastModifiedDate": "2026-02-25T07:17:01.763",
+            "clients": [
+                {
+                    "clientId": 1778,
+                    "clientName": "Test Party API1",
+                    "clientTypeName": "Customer",
+                    "streetLine1": "Test street 1",
+                    "state": null,
+                    "city": null,
+                    "countryName": "Australia",
+                    "contactName": "Test Contact",
+                    "isPrimary": true,
+                    "clientRoleName": "Supplier",
+                    "externalId": "67890"
+                }
+            ],
+            "assignees": [
+                {
+                    "username": "karan.kalbhor@execo.com",
+                    "fullName": "Karan Kalbhor",
+                    "departmentName": "CPAi Support",
+                    "functionName": "Legal Reviwer",
+                    "isPrimary": true
+                }
+            ],
+            "legalParties": [
+                {
+                    "legalPartyId": 11,
+                    "name": "ContractPod Inc.",
+                    "isPrimary": true
+                }
+            ],
+            "customFields": [
+                {
+                    "customFieldName": "Termoftheagreement",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "terminationofcontract",
+                    "customFieldValue": "Termination by either party",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Paymentterms1",
+                    "customFieldValue": "5",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "PaymentTerms",
+                    "customFieldValue": "Yes",
+                    "customFieldValueId": null
+                },
+                {
+                    "customFieldName": "Term",
+                    "customFieldValue": "3",
+                    "customFieldValueId": null
+                }
+            ],
+            "isArchived": false,
+            "hasRelationship": false,
+            "latestVersionName": "PN_Complex_Agreement_Template_1_V1.pdf",
+            "hasOpenCollaboration": false,
+            "isEvergreenContract": false,
+            "requestDescription": "NDA - Intel - 19th Feb 2026",
+            "requesterUsername": null,
+            "requesterFullName": "Karan Kalbhor",
+            "requesterDepartment": "CPAi Support",
+            "requesterUserId": null,
+            "requesterDepartmentId": null,
+            "integrationId": [
+                "1123",
+                "1124"
+            ],
+            "currencyCode": "USD"
+        }
+    ],
+    "statusCode": 200,
+    "message": null
+}
